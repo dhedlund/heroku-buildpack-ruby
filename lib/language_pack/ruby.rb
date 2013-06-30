@@ -23,7 +23,7 @@ class LanguagePack::Ruby < LanguagePack::Base
   # detects if this is a valid Ruby app
   # @return [Boolean] true if it's a Ruby app
   def self.use?
-    File.exist?("Gemfile")
+    File.exist?("Gemfile.heroku")
   end
 
   def self.gem_version(name)
@@ -262,8 +262,8 @@ ERROR
       topic "Using Ruby version: #{ruby_version}"
       if !@ruby_version_set
         warn(<<WARNING)
-you have not declared a Ruby version in your Gemfile.
-To set your Ruby version add this line to your Gemfile:"
+you have not declared a Ruby version in your Gemfile.heroku.
+To set your Ruby version add this line to your Gemfile.heroku:"
 ruby '#{ruby_version.split("-").last}'"
 # See https://devcenter.heroku.com/articles/ruby-versions for more information."
 WARNING
@@ -405,19 +405,19 @@ WARNING
       bundle_bin     = "bundle"
       bundle_command = "#{bundle_bin} install --without #{bundle_without} --path vendor/bundle --binstubs #{bundler_binstubs_path}"
 
-      unless File.exist?("Gemfile.lock")
-        error "Gemfile.lock is required. Please run \"bundle install\" locally\nand commit your Gemfile.lock."
+      unless File.exist?("Gemfile.heroku.lock")
+        error "Gemfile.heroku.lock is required. Please run \"BUNDLE_GEMFILE=Gemfile.heroku bundle install\" locally\nand commit your Gemfile.heroku.lock."
       end
 
       if has_windows_gemfile_lock?
         warn(<<WARNING)
-Removing `Gemfile.lock` because it was generated on Windows.
+Removing `Gemfile.heroku.lock` because it was generated on Windows.
 Bundler will do a full resolve so native gems are handled properly.
 This may result in unexpected gem versions being used in your app.
 WARNING
 
         log("bundle", "has_windows_gemfile_lock")
-        File.unlink("Gemfile.lock")
+        File.unlink("Gemfile.heroku.lock")
       else
         # using --deployment is preferred if we can
         bundle_command += " --deployment"
@@ -441,7 +441,7 @@ WARNING
         bundler_path   = "#{pwd}/#{slug_vendor_base}/gems/#{BUNDLER_GEM_PATH}/lib"
         # we need to set BUNDLE_CONFIG and BUNDLE_GEMFILE for
         # codon since it uses bundler.
-        env_vars       = "env BUNDLE_GEMFILE=#{pwd}/Gemfile BUNDLE_CONFIG=#{pwd}/.bundle/config CPATH=#{yaml_include}:$CPATH CPPATH=#{yaml_include}:$CPPATH LIBRARY_PATH=#{yaml_lib}:$LIBRARY_PATH RUBYOPT=\"#{syck_hack}\""
+        env_vars       = "env BUNDLE_GEMFILE=#{pwd}/Gemfile.heroku BUNDLE_CONFIG=#{pwd}/.bundle/config CPATH=#{yaml_include}:$CPATH CPPATH=#{yaml_include}:$CPPATH LIBRARY_PATH=#{yaml_lib}:$LIBRARY_PATH RUBYOPT=\"#{syck_hack}\""
         env_vars      += " BUNDLER_LIB_PATH=#{bundler_path}" if ruby_version && ruby_version.match(/^ruby-1\.8\.7/)
         puts "Running: #{bundle_command}"
         bundler_output << pipe("#{env_vars} #{bundle_command} --no-clean 2>&1")
@@ -553,8 +553,8 @@ params = CGI.parse(uri.query || "")
     end
   end
 
-  # detects whether the Gemfile.lock contains the Windows platform
-  # @return [Boolean] true if the Gemfile.lock was created on Windows
+  # detects whether the Gemfile.heroku.lock contains the Windows platform
+  # @return [Boolean] true if the Gemfile.heroku.lock was created on Windows
   def has_windows_gemfile_lock?
     bundle.platforms.detect do |platform|
       /mingw|mswin/.match(platform.os) if platform.is_a?(Gem::Platform)

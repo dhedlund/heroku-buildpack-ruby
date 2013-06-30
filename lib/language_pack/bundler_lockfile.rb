@@ -1,9 +1,9 @@
 module LanguagePack
   module BundlerLockfile
     module ClassMethods
-      # checks if the Gemfile and Gemfile.lock exist
+      # checks if the Gemfile.heroku and Gemfile.heroku.lock exist
       def gemfile_lock?
-        File.exist?('Gemfile') && File.exist?('Gemfile.lock')
+        File.exist?('Gemfile.heroku') && File.exist?('Gemfile.heroku.lock')
       end
 
       def bundle
@@ -25,7 +25,7 @@ module LanguagePack
       def parse_bundle
         $: << "#{bundler_path}/gems/bundler-#{LanguagePack::Ruby::BUNDLER_VERSION}/lib"
         require "bundler"
-        Bundler::LockfileParser.new(File.read("Gemfile.lock"))
+        Bundler::LockfileParser.new(File.read("Gemfile.heroku.lock"))
       end
     end
 

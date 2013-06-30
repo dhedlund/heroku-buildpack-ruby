@@ -11,7 +11,7 @@ Usage
 Example Usage:
 
     $ ls
-    Gemfile Gemfile.lock
+    Gemfile.heroku Gemfile.heroku.lock
 
     $ heroku create --stack cedar --buildpack https://github.com/heroku/heroku-buildpack-ruby.git
 
@@ -31,7 +31,7 @@ Example Usage:
            Procfile declares types -> (none)
            Default types for Ruby  -> console, rake
 
-The buildpack will detect your app as Ruby if it has a `Gemfile` and `Gemfile.lock` files in the root directory. It will then proceed to run `bundle install` after setting up the appropriate environment for [ruby](http://ruby-lang.org) and [Bundler](http://gembundler.com).
+The buildpack will detect your app as Ruby if it has a `Gemfile.heroku` and `Gemfile.heroku.lock` files in the root directory. It will then proceed to run `bundle install` after setting up the appropriate environment for [ruby](http://ruby-lang.org) and [Bundler](http://gembundler.com).
 
 #### Run the Tests
 
@@ -61,14 +61,14 @@ Now go take a nap or something for a really long time.
 
 #### Bundler
 
-For non-windows `Gemfile.lock` files, the `--deployment` flag will be used. In the case of windows, the Gemfile.lock will be deleted and Bundler will do a full resolve so native gems are handled properly. The `vendor/bundle` directory is cached between builds to allow for faster `bundle install` times. `bundle clean` is used to ensure no stale gems are stored between builds.
+For non-windows `Gemfile.heroku.lock` files, the `--deployment` flag will be used. In the case of windows, the Gemfile.heroku.lock will be deleted and Bundler will do a full resolve so native gems are handled properly. The `vendor/bundle` directory is cached between builds to allow for faster `bundle install` times. `bundle clean` is used to ensure no stale gems are stored between builds.
 
 ### Rails 2
 
 Example Usage:
 
     $ ls
-    app  config  db  doc  Gemfile  Gemfile.lock  lib  log  public  Rakefile  README  script  test  tmp  vendor
+    app  config  db  doc  Gemfile.heroku  Gemfile.heroku.lock  lib  log  public  Rakefile  README  script  test  tmp  vendor
 
     $ ls config/environment.rb
     config/environment.rb
@@ -102,7 +102,7 @@ Any vendored plugin can be stopped from being installed by creating the director
 Example Usage:
 
     $ ls
-    app  config  config.ru  db  doc  Gemfile  Gemfile.lock  lib  log  Procfile  public  Rakefile  README  script  tmp  vendor
+    app  config  config.ru  db  doc  Gemfile.heroku  Gemfile.heroku.lock  lib  log  Procfile  public  Rakefile  README  script  tmp  vendor
 
     $ ls config/application.rb
     config/application.rb
@@ -165,7 +165,7 @@ Flow
 
 Here's the basic flow of how the buildpack works:
 
-Ruby (Gemfile and Gemfile.lock is detected)
+Ruby (Gemfile.heroku and Gemfile.heroku.lock is detected)
 
 * runs Bundler
 * installs binaries
